@@ -9,7 +9,7 @@ export default function Navbar() {
   const isDashboard = pathname === '/dashboard'
 
   return (
-    <nav className="w-full px-6 py-4 bg-white shadow-md flex justify-between items-center">
+    <nav className="w-full fixed top-0 left-0 z-50 bg-white shadow-md px-6 py-4 flex justify-between items-center">
       <div className="flex space-x-6 text-xl font-bold">
         <button
             onClick={() => {

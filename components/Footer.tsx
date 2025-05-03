@@ -39,12 +39,12 @@ export default function Footer() {
         </a>
 
         {/* eBay */}
-        <a href="https://www.ebay.com" target="_blank" rel="noopener noreferrer">
+        <a href="https://www.ebay.com/str/ldtrue" target="_blank" rel="noopener noreferrer">
           <FaEbay className="w-6 h-6 text-gray-700 hover:text-black transition" />
         </a>
 
         {/* Instagram */}
-        <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
+        <a href="https://www.instagram.com/ld_true/" target="_blank" rel="noopener noreferrer">
           <FaInstagram className="w-6 h-6 text-gray-700 hover:text-black transition" />
         </a>
       </div>
