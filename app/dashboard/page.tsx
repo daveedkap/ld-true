@@ -60,7 +60,9 @@ export default function DashboardPage() {
             transition={{ duration: 0.8, ease: 'easeOut' }}
             className="text-center"
           >
-            <h1 className="text-6xl font-bold text-gray-800 mb-6 tracking-tight">LD TRUE</h1>
+            <h1 className="text-7xl font-bold text-gray-800 mb-6 tracking-widest font-[var(--font-bebas)]">
+              LD TRUE
+            </h1>
 
             <div className="h-20 flex items-center justify-center">
               <AnimatePresence mode="wait">
@@ -115,8 +117,10 @@ export default function DashboardPage() {
             </button>
           </div>
         </section>
+      
+        <div className="w-full border-t border-gray-300" />
 
-        <section id="next-section" className="py-20 px-6 bg-white">
+        <section id="next-section" className="py-20 px-6 bg-gray-100">
           <h2 className="text-2xl font-semibold mb-4">More Coming Soon</h2>
           <p className="text-gray-600">
             This section will include marketplace stats, latest listings, featured products, etc.

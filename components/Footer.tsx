@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-white shadow-md px-6 py-4">
+    <footer className="w-full bg-white shadow-t-md border-t border-gray-200 px-6 py-4">
       <div className="max-w-screen-xl mx-auto flex justify-center items-center space-x-3">
         <span className="text-gray-700 text-sm font-medium">Follow us on: </span>
 
