@@ -8,8 +8,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 const messages = [
   "We bring the best of secondhand fashion to your fingertips.",
-  "Shop unique, sustainable finds from across top marketplaces.",
-  "LD TRUE curates bold style from Depop, Grailed, and beyond.",
+  "Shop unique, vintage, sustainable finds across top marketplaces.",
+  "Shop with confidence, knowing you're making a difference.",
 ]
 
 export default function DashboardPage() {
