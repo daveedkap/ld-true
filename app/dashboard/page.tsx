@@ -1,32 +1,13 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
 
 export default function DashboardPage() {
   const router = useRouter()
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const res = await fetch('/api/check-auth')
-      if (res.status !== 200) {
-        router.push('/login')
-      } else {
-        setLoading(false)
-      }
-    }
-
-    checkAuth()
-  }, [router])
 
   const handleLogout = async () => {
     await fetch('/api/logout', { method: 'POST' })
     router.push('/login')
-  }
-
-  if (loading) {
-    return <div className="h-screen flex items-center justify-center">Loading...</div>
   }
 
   return (

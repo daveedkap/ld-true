@@ -3,19 +3,20 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(req: NextRequest) {
-  const isLoggedIn = req.cookies.get('auth')?.value === 'true'
-
-  const protectedPaths = ['/dashboard']
+  const cookie = req.cookies.get('auth')?.value
   const pathname = req.nextUrl.pathname
 
-  if (protectedPaths.includes(pathname) && !isLoggedIn) {
+  console.log(`[middleware] Path: ${pathname}`)
+  console.log(`[middleware] Auth cookie: ${cookie}`)
+
+  const protectedPaths = ['/dashboard']
+  const isProtected = protectedPaths.includes(pathname)
+
+  if (isProtected && cookie !== 'true') {
+    console.log('[middleware] 🚫 Redirecting to /login')
     return NextResponse.redirect(new URL('/login', req.url))
   }
 
+  console.log('[middleware] ✅ Allowing access')
   return NextResponse.next()
-}
-
-// Protect only these paths
-export const config = {
-  matcher: ['/dashboard'],
 }
