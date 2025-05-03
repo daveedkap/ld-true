@@ -12,14 +12,13 @@ export default function Navbar() {
     <nav className="w-full px-6 py-4 bg-white shadow-md flex justify-between items-center">
       <div className="flex space-x-6 text-xl font-bold">
         <button
-          onClick={() => {
-            if (!isDashboard) router.push('/dashboard')
-          }}
-          className="text-gray-700 hover:text-black transition"
-        >
-          Home
-        </button>
-
+            onClick={() => {
+                if (!isDashboard) router.push('/dashboard')
+            }}
+            className="text-gray-700 hover:text-black transition cursor-pointer"
+            >
+            Home
+            </button>
         <Link href="/marketplaces" className="text-gray-700 hover:text-black transition">
           Marketplaces
         </Link>

@@ -9,10 +9,10 @@ export default function PageWrapper({ children }: { children: React.ReactNode })
   const showNavbar = pathname !== '/login'
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       {showNavbar && <Navbar />}
-      {children}
+      <div className="flex-1 flex flex-col">{children}</div>
       {showNavbar && <Footer />}
-    </>
+    </div>
   )
 }
