@@ -10,8 +10,8 @@ const montserrat = Montserrat({
 })
 
 export const metadata: Metadata = {
-  title: "Your Site Title",
-  description: "Your site description",
+  title: "LD True",
+  description: "Secondhand store with vintage goods",
 }
 
 export default function RootLayout({
