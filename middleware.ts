@@ -9,7 +9,7 @@ export function middleware(req: NextRequest) {
   console.log(`[middleware] Path: ${pathname}`)
   console.log(`[middleware] Auth cookie: ${cookie}`)
 
-  const protectedPaths = ['/dashboard']
+  const protectedPaths = ['/dashboard', '/about', '/contact', '/marketplaces']
   const isProtected = protectedPaths.includes(pathname)
 
   if (isProtected && cookie !== 'true') {
