@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import PageWrapper from '@/components/PageWrapper'
 import { FaChevronDown } from 'react-icons/fa'
 import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
 
 const messages = [
   "We bring the best of secondhand fashion to your fingertips.",
@@ -131,32 +132,45 @@ export default function DashboardPage() {
       
         <div className="w-full border-t border-gray-300" />
 
-        <section id="next-section" className="py-20 px-6 bg-gray-100">
-          <h2 className="text-3xl font-bold mb-6 text-gray-800">Trending Items</h2>
-
+        <section id="next-section" className="py-20 px-6 bg-white">
+          <h2 className="text-4xl font-bold mb-10 text-center text-gray-900 tracking-tight">
+            Trending Listings on eBay
+          </h2>
           {listingsLoading ? (
-            <p className="text-gray-600">Loading listings...</p>
+            <p className="text-center text-gray-500">Loading listings...</p>
           ) : listings.length === 0 ? (
-            <p className="text-gray-600">No listings found. Try adjusting your queries.</p>
+            <p className="text-center text-gray-500">No listings found. Try adjusting your queries.</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {listings.map((item) => (
                 <a
                   key={item.itemId}
                   href={item.itemWebUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white rounded-2xl shadow hover:shadow-lg transition p-4 flex flex-col"
+                  className="group bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
                 >
-                  <img
-                    src={item?.image?.imageUrl || item?.thumbnailImages?.[0]?.imageUrl}
-                    alt={item.title}
-                    className="w-full h-52 object-cover rounded-xl mb-4"
-                  />
-                  <h3 className="text-md font-semibold text-gray-800 mb-2 line-clamp-2">{item.title}</h3>
-                  <p className="text-gray-600 font-medium">
-                    ${item?.price?.value} {item?.price?.currency}
-                  </p>
+                  <div className="relative w-full aspect-[3/4]">
+                    <Image
+                      src={
+                        item?.image?.imageUrl ||
+                        item?.thumbnailImages?.[0]?.imageUrl ||
+                        '/fallback.jpg'
+                      }
+                      alt={item.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out"
+                      sizes="(max-width: 768px) 100vw, 25vw"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-md font-semibold text-gray-900 mb-1 line-clamp-2 leading-snug">
+                      {item.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm">
+                      ${item?.price?.value} {item?.price?.currency}
+                    </p>
+                  </div>
                 </a>
               ))}
             </div>
