@@ -1,4 +1,4 @@
-# LD TRUE
+# LD True
 
 A modern, sustainable fashion storefront that curates and resells secondhand clothing across marketplaces like Grailed, eBay, Depop, and Mercari. Built with **Next.js**, **Tailwind CSS**, **Framer Motion**, **MongoDB**, and deployed with **Vercel**.
 
