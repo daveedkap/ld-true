@@ -70,9 +70,10 @@ git checkout -b your-feature-name
 
 Keep changes clean and limited to the purpose of the branch.
 
-### 3. Stage, Commit, and Push
+### 3. Test, Stage, Commit, and Push
 
 ```bash
+npm run build # To make sure Vercel deployment is successful
 git add .
 git commit -m "✨ Add [your feature]"
 git push origin your-feature-name
