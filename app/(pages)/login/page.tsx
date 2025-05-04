@@ -2,8 +2,10 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Lottie from 'lottie-react'
+import dynamic from 'next/dynamic'
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false })
 import bunnyAnimation from '@/public/animations/bunny.json'
+
 
 export default function LoginPage() {
   const [username, setUsername] = useState('')
