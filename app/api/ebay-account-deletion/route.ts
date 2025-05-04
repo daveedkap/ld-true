@@ -10,33 +10,36 @@ export async function GET(req: Request) {
 
   if (!challengeCode || !verificationToken || !endpointUrl) {
     return new Response(
-      JSON.stringify({ error: 'Missing challenge_code or env values' }),
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: 'Missing required values' }),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json; charset=utf-8' }
+      }
     )
   }
 
-  // Hash in the required order
+  // Generate hash: sha256(challengeCode + verificationToken + endpointUrl)
   const hash = createHash('sha256')
   hash.update(challengeCode)
   hash.update(verificationToken)
   hash.update(endpointUrl)
   const challengeResponse = hash.digest('hex')
 
-  // Return the correct response format
-  return new Response(
-    JSON.stringify({ challengeResponse }),
-    {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8'
-      }
+  // Carefully construct JSON and prevent BOM by not using template literals or static strings
+  const body = Buffer.from(JSON.stringify({ challengeResponse }), 'utf8')
+
+  return new Response(body, {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Length': body.length.toString()
     }
-  )
+  })
 }
 
 export async function POST(req: Request) {
   const body = await req.json()
-  console.log('📬 eBay Account Deletion Notification:', body)
+  console.log('📬 Received eBay Deletion Notification:', body)
 
   return new Response('Received', { status: 200 })
 }
