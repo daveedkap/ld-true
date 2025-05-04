@@ -98,13 +98,16 @@ export default function ContactPage() {
             required
         />
         </div>
-        <button
-        type="submit"
-        disabled={status === 'loading'}
-        className="bg-gray-800 text-white font-semibold px-6 py-2 rounded-full hover:bg-black transition"
-        >
-        {status === 'loading' ? 'Sending...' : 'Send Message'}
-        </button>
+        
+        <div className="flex justify-center">
+            <button
+                type="submit"
+                disabled={status === 'loading'}
+                className="bg-gray-800 text-white font-semibold px-6 py-2 rounded-full hover:bg-black transition"
+            >
+                {status === 'loading' ? 'Sending...' : 'Send Message'}
+            </button>
+        </div>
 
         {status === 'success' && (
             <motion.div
