@@ -18,6 +18,8 @@ export default function DashboardPage() {
   const [index, setIndex] = useState(0)
   const [manual, setManual] = useState(false)
   const [resumeTimeout, setResumeTimeout] = useState<NodeJS.Timeout | null>(null)
+  const [listings, setListings] = useState<any[]>([])
+  const [listingsLoading, setListingsLoading] = useState(true)
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -26,6 +28,15 @@ export default function DashboardPage() {
         router.push('/login')
       } else {
         setLoading(false)
+        try {
+          const listingsRes = await fetch('/api/ebay-listings')
+          const data = await listingsRes.json()
+          setListings(data)
+        } catch (e) {
+          console.error('Failed to load listings:', e)
+        } finally {
+          setListingsLoading(false)
+        }
       }
     }
     checkAuth()
@@ -121,10 +132,35 @@ export default function DashboardPage() {
         <div className="w-full border-t border-gray-300" />
 
         <section id="next-section" className="py-20 px-6 bg-gray-100">
-          <h2 className="text-2xl font-semibold mb-4">More Coming Soon</h2>
-          <p className="text-gray-600">
-            This section will include marketplace stats, latest listings, featured products, etc.
-          </p>
+          <h2 className="text-3xl font-bold mb-6 text-gray-800">Trending Items</h2>
+
+          {listingsLoading ? (
+            <p className="text-gray-600">Loading listings...</p>
+          ) : listings.length === 0 ? (
+            <p className="text-gray-600">No listings found. Try adjusting your queries.</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {listings.map((item) => (
+                <a
+                  key={item.itemId}
+                  href={item.itemWebUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-white rounded-2xl shadow hover:shadow-lg transition p-4 flex flex-col"
+                >
+                  <img
+                    src={item?.image?.imageUrl || item?.thumbnailImages?.[0]?.imageUrl}
+                    alt={item.title}
+                    className="w-full h-52 object-cover rounded-xl mb-4"
+                  />
+                  <h3 className="text-md font-semibold text-gray-800 mb-2 line-clamp-2">{item.title}</h3>
+                  <p className="text-gray-600 font-medium">
+                    ${item?.price?.value} {item?.price?.currency}
+                  </p>
+                </a>
+              ))}
+            </div>
+          )}
         </section>
       </main>
     </PageWrapper>
