@@ -215,7 +215,9 @@ export default function DashboardPage() {
                   Filter
                 </button>
                 {filtersOpen && (
-                  <div className="absolute z-10 bg-white border border-gray-200 shadow-md mt-2 p-4 rounded w-80 -right-10">
+                  <div className="absolute z-10 bg-white border border-gray-200 shadow-md mt-2 p-4 rounded w-80 
+                  sm:-right-10 sm:left-auto sm:translate-x-0 
+                  left-[40%] -translate-x-[20%]">                
                     <div className="space-y-2">
                       <label className="block font-semibold text-gray-700 mb-2">
                         <input
