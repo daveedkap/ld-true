@@ -216,7 +216,15 @@ export default function DashboardPage() {
             >
               Shop Now
             </button>
-            <FaChevronDown className="text-2xl animate-bounce cursor-pointer" />
+            <button
+              onClick={() => {
+                const el = document.getElementById('next-section')
+                if (el) el.scrollIntoView({ behavior: 'smooth' })
+              }}
+              className="focus:outline-none"
+            >
+              <FaChevronDown className="text-2xl animate-bounce cursor-pointer" />
+            </button>
           </div>
         </section>
 
