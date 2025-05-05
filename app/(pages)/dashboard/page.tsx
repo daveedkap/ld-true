@@ -49,6 +49,8 @@ export default function DashboardPage() {
   const [pendingCategories, setPendingCategories] = useState<string[]>([])
   const dropdownRef = useRef<HTMLDivElement>(null)
   const filterButtonRef = useRef<HTMLButtonElement>(null)
+  const [touchStartX, setTouchStartX] = useState<number | null>(null)
+  const [touchEndX, setTouchEndX] = useState<number | null>(null)
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -116,6 +118,21 @@ export default function DashboardPage() {
     setResumeTimeout(timeout)
   }
 
+  const handleSwipe = () => {
+    if (touchStartX === null || touchEndX === null) return
+    const distance = touchStartX - touchEndX
+    const threshold = 50 // minimum swipe distance
+    if (distance > threshold) {
+      // swiped left
+      setIndex((prev) => (prev + 1) % messages.length)
+      resetManualPause()
+    } else if (distance < -threshold) {
+      // swiped right
+      setIndex((prev) => (prev - 1 + messages.length) % messages.length)
+      resetManualPause()
+    }
+  }  
+
   const getCategoryCount = (cat: string) =>
     listings.filter((item) => {
       const title = item?.title?.toLowerCase() || ''
@@ -175,7 +192,26 @@ export default function DashboardPage() {
               LD TRUE
             </h1>
 
-            <div className="h-20 flex items-center justify-center">
+            <div
+              className="h-20 flex items-center justify-center sm:touch-none"
+              onTouchStart={(e) => setTouchStartX(e.changedTouches[0].clientX)}
+              onTouchEnd={(e) => {
+                const touchEnd = e.changedTouches[0].clientX
+                if (touchStartX === null) return
+                const distance = touchStartX - touchEnd
+                const threshold = 50
+
+                if (distance > threshold && index < messages.length - 1) {
+                  setIndex(index + 1)
+                  resetManualPause()
+                } else if (distance < -threshold && index > 0) {
+                  setIndex(index - 1)
+                  resetManualPause()
+                }
+
+                setTouchStartX(null)
+              }}
+            >
               <AnimatePresence mode="wait">
                 <motion.p
                   key={index}
