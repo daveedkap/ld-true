@@ -19,7 +19,7 @@ export default function AboutPage() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="min-h-screen bg-gray-100 px-6 py-24 flex flex-col items-center text-center"
+        className="min-h-screen bg-white px-6 py-24 flex flex-col items-center text-center"
       >
         <h1 className="text-5xl font-bold text-gray-800 mb-6 tracking-wide font-[var(--font-bebas)]">
           About Us

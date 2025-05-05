@@ -2,13 +2,14 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState } from 'react'
 import { FiMenu, FiX } from 'react-icons/fi'
+import { useEffect, useState } from 'react'
 
 export default function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
 
   // Show logout button on all authenticated pages
   const showLogout = ['/dashboard', '/marketplaces', '/about', '/contact'].includes(pathname)
@@ -18,8 +19,18 @@ export default function Navbar() {
     router.push('/login')
   }
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
-    <nav className="w-full fixed top-0 left-0 z-50 bg-white shadow-md px-6 py-4 flex justify-between items-center">
+    <nav className={`w-full fixed top-0 left-0 z-50 px-6 py-4 flex justify-between items-center transition-all duration-300 ${
+        scrolled ? 'bg-white shadow-md' : 'bg-transparent'
+    }`}>
       {/* Left side: Desktop nav */}
       <div className="flex space-x-6 text-xl font-bold">
         <button

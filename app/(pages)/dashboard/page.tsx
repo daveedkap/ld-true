@@ -83,8 +83,8 @@ export default function DashboardPage() {
 
   return (
     <PageWrapper>
-      <main className="flex-1">
-        <section className="h-screen w-full bg-gray-100 flex flex-col items-center justify-center px-6 text-center relative">
+      <main className="flex-1 bg-white">
+        <section className="h-screen w-full bg-white flex flex-col items-center justify-center px-6 text-center relative">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -179,7 +179,7 @@ export default function DashboardPage() {
             <p className="text-center text-gray-500">No listings found. Try adjusting your queries.</p>
           ) : (
             <motion.div
-              className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+              className="grid gap-8 grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-6"
               initial="hidden"
               animate="visible"
               variants={{
