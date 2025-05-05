@@ -1,4 +1,3 @@
-// pages/dashboard/page.tsx
 'use client'
 
 import { useRouter } from 'next/navigation'
@@ -14,11 +13,11 @@ const messages = [
   "Shop with confidence, knowing you're making a difference.",
 ]
 
-const categories = [
-  'Jeans', 'Pants', 'Cargo Pants', 'Sweatpants',
-  'Track Pants', 'Ski Pants', 'Cargo Shorts',
-  'Jorts', 'T-Shirt', 'Hoodies', 'Jackets', 'Beanies'
-]
+const categoryGroups = {
+  Tops: ['T-Shirt', 'Hoodies', 'Jackets'],
+  Bottoms: ['Jeans', 'Pants', 'Cargo Pants', 'Sweatpants', 'Track Pants', 'Ski Pants', 'Cargo Shorts', 'Jorts'],
+  Hats: ['Beanies'],
+}
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -30,6 +29,7 @@ export default function DashboardPage() {
   const [listingsLoading, setListingsLoading] = useState(true)
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null)
   const [filtersOpen, setFiltersOpen] = useState(false)
+  const [expandedGroups, setExpandedGroups] = useState<string[]>([])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [pendingCategories, setPendingCategories] = useState<string[]>([])
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -132,6 +132,12 @@ export default function DashboardPage() {
       return 0
     })
 
+  const toggleGroup = (group: string) => {
+    setExpandedGroups((prev) =>
+      prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group]
+    )
+  }
+
   if (loading) {
     return <div className="h-screen flex items-center justify-center">Loading...</div>
   }
@@ -217,37 +223,49 @@ export default function DashboardPage() {
                 {filtersOpen && (
                   <div className="absolute z-10 bg-white border border-gray-200 shadow-md mt-2 p-4 rounded w-80 
                   sm:-right-10 sm:left-auto sm:translate-x-0 
-                  left-[40%] -translate-x-[20%]">                
+                  left-[40%] -translate-x-[20%]">
+                    <label className="block font-semibold text-gray-700 mb-2">
+                      <input
+                        type="checkbox"
+                        className="mr-2"
+                        checked={pendingCategories.length === 0}
+                        onChange={() => setPendingCategories([])}
+                      />
+                      All
+                    </label>
                     <div className="space-y-2">
-                      <label className="block font-semibold text-gray-700 mb-2">
-                        <input
-                          type="checkbox"
-                          className="mr-2"
-                          checked={pendingCategories.length === 0}
-                          onChange={() => setPendingCategories([])}
-                        />
-                        All
-                      </label>
-                      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                        {categories.map((cat) => (
-                          <label key={cat} className="text-sm text-gray-700 flex items-center">
-                            <input
-                              type="checkbox"
-                              className="mr-2"
-                              checked={pendingCategories.includes(cat)}
-                              onChange={() => handleCategoryToggle(cat)}
-                            />
-                            {cat} ({getCategoryCount(cat)})
-                          </label>
-                        ))}
-                      </div>
-                      <button
-                        onClick={handleApplyFilters}
-                        className="mt-4 w-full bg-black text-white text-sm py-1.5 rounded hover:bg-gray-900 transition"
-                      >
-                        Apply
-                      </button>
+                      {Object.entries(categoryGroups).map(([group, cats]) => (
+                        <div key={group}>
+                          <button
+                            className="font-bold text-gray-800 hover:underline mb-1"
+                            onClick={() => toggleGroup(group)}
+                          >
+                            {group}
+                          </button>
+                          {expandedGroups.includes(group) && (
+                            <div className="grid grid-cols-2 gap-x-4 gap-y-2 ml-2">
+                              {cats.map((cat) => (
+                                <label key={cat} className="text-sm text-gray-700 flex items-center">
+                                  <input
+                                    type="checkbox"
+                                    className="mr-2"
+                                    checked={pendingCategories.includes(cat)}
+                                    onChange={() => handleCategoryToggle(cat)}
+                                  />
+                                  {cat} ({getCategoryCount(cat)})
+                                </label>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
                     </div>
+                    <button
+                      onClick={handleApplyFilters}
+                      className="mt-4 w-full bg-black text-white text-sm py-1.5 rounded hover:bg-gray-900 transition"
+                    >
+                      Apply
+                    </button>
                   </div>
                 )}
               </div>
