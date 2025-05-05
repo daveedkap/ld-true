@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import PageWrapper from '@/components/PageWrapper'
 import { FaChevronDown } from 'react-icons/fa'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -13,6 +13,12 @@ const messages = [
   "Shop with confidence, knowing you're making a difference.",
 ]
 
+const categories = [
+  'Jeans', 'Pants', 'Cargo Pants', 'Sweatpants',
+  'Track Pants', 'Ski Pants', 'Cargo Shorts',
+  'Jorts', 'T-Shirt', 'Hoodies', 'Jackets', 'Beanies'
+]
+
 export default function DashboardPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
@@ -22,6 +28,11 @@ export default function DashboardPage() {
   const [listings, setListings] = useState<any[]>([])
   const [listingsLoading, setListingsLoading] = useState(true)
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null)
+  const [filtersOpen, setFiltersOpen] = useState(false)
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [pendingCategories, setPendingCategories] = useState<string[]>([])
+
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -61,6 +72,16 @@ export default function DashboardPage() {
     return () => clearInterval(interval)
   }, [manual])
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setFiltersOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
   const resetManualPause = () => {
     setManual(true)
     if (resumeTimeout) clearTimeout(resumeTimeout)
@@ -68,14 +89,36 @@ export default function DashboardPage() {
     setResumeTimeout(timeout)
   }
 
-  const sortedListings = [...listings].sort((a, b) => {
-    const aPrice = parseFloat(a?.price?.value || '0')
-    const bPrice = parseFloat(b?.price?.value || '0')
+  const getCategoryCount = (cat: string) =>
+    listings.filter((item) =>
+      item?.title?.toLowerCase().includes(cat.toLowerCase())
+    ).length
 
-    if (sortOrder === 'asc') return aPrice - bPrice
-    if (sortOrder === 'desc') return bPrice - aPrice
-    return 0
-  })
+  const handleCategoryToggle = (cat: string) => {
+    setPendingCategories((prev) =>
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
+    )
+  }
+
+  const handleApplyFilters = () => {
+    setSelectedCategories(pendingCategories)
+    setFiltersOpen(false)
+  }
+
+  const sortedListings = [...listings]
+    .filter((item) => {
+      if (selectedCategories.length === 0) return true
+      return selectedCategories.some((cat) =>
+        item.title.toLowerCase().includes(cat.toLowerCase())
+      )
+    })
+    .sort((a, b) => {
+      const aPrice = parseFloat(a?.price?.value || '0')
+      const bPrice = parseFloat(b?.price?.value || '0')
+      if (sortOrder === 'asc') return aPrice - bPrice
+      if (sortOrder === 'desc') return bPrice - aPrice
+      return 0
+    })
 
   if (loading) {
     return <div className="h-screen flex items-center justify-center">Loading...</div>
@@ -136,100 +179,142 @@ export default function DashboardPage() {
             >
               Shop Now
             </button>
-            <button
-              onClick={() => {
-                const el = document.getElementById('next-section')
-                if (el) el.scrollIntoView({ behavior: 'smooth' })
-              }}
-              className="text-gray-700 hover:text-black transition hover:scale-110 focus:outline-none cursor-pointer"
-            >
-              <FaChevronDown className="text-2xl animate-bounce" />
-            </button>
+            <FaChevronDown className="text-2xl animate-bounce cursor-pointer" />
           </div>
         </section>
 
         <div className="w-full border-t border-gray-300" />
 
         <section id="next-section" className="py-20 px-6 bg-white">
-          <div className="flex flex-col md:flex-row items-center justify-between mb-10 gap-4">
-            <h2 className="text-4xl font-bold text-gray-900 tracking-tight">
-              Latest Listings
+          <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
+            <h2 className="text-4xl font-bold text-gray-900 tracking-tight text-center md:text-left">
+              Featured Listings
             </h2>
-            <div className="flex items-center space-x-2">
-              <label htmlFor="sort" className="text-sm font-medium text-gray-700">Sort by:</label>
-              <select
-                id="sort"
-                className="border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-                value={sortOrder || ''}
-                onChange={(e) => {
-                  const val = e.target.value
-                  setSortOrder(val === 'asc' ? 'asc' : val === 'desc' ? 'desc' : null)
-                }}
-              >
-                <option value="">Default</option>
-                <option value="asc">Price: Low to High</option>
-                <option value="desc">Price: High to Low</option>
-              </select>
+            <div className="flex items-center gap-4 flex-wrap justify-center md:justify-end">
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => {
+                    setFiltersOpen(!filtersOpen)
+                    setPendingCategories(selectedCategories)
+                  }}
+                  className="border border-gray-300 rounded px-3 py-1 text-sm hover:bg-gray-100"
+                >
+                  Filter
+                </button>
+                {filtersOpen && (
+                  <div className="absolute z-10 bg-white border border-gray-200 shadow-md mt-2 p-4 rounded max-h-80 overflow-y-auto w-64">
+                    <div className="space-y-2">
+                      <label className="block font-semibold text-gray-700">
+                        <input
+                          type="checkbox"
+                          className="mr-2"
+                          checked={pendingCategories.length === 0}
+                          onChange={() => setPendingCategories([])}
+                        />
+                        All
+                      </label>
+                      {categories.map((cat) => (
+                        <label key={cat} className="block text-sm text-gray-700">
+                          <input
+                            type="checkbox"
+                            className="mr-2"
+                            checked={pendingCategories.includes(cat)}
+                            onChange={() => handleCategoryToggle(cat)}
+                          />
+                          {cat} ({getCategoryCount(cat)})
+                        </label>
+                      ))}
+                      <button
+                        onClick={handleApplyFilters}
+                        className="mt-4 w-full bg-black text-white text-sm py-1.5 rounded hover:bg-gray-900 transition"
+                      >
+                        Apply
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <label htmlFor="sort" className="text-sm font-medium text-gray-700">Sort by:</label>
+                <select
+                  id="sort"
+                  className="border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                  value={sortOrder || ''}
+                  onChange={(e) => {
+                    const val = e.target.value
+                    setSortOrder(val === 'asc' ? 'asc' : val === 'desc' ? 'desc' : null)
+                  }}
+                >
+                  <option value="">Default</option>
+                  <option value="asc">Price: Low to High</option>
+                  <option value="desc">Price: High to Low</option>
+                </select>
+              </div>
             </div>
           </div>
 
           {listingsLoading ? (
             <p className="text-center text-gray-500">Loading listings...</p>
           ) : sortedListings.length === 0 ? (
-            <p className="text-center text-gray-500">No listings found. Try adjusting your queries.</p>
+            <div className="text-center text-gray-500 min-h-[600px] flex items-center justify-center">
+              No listings match your filters.
+            </div>
           ) : (
-            <motion.div
-              className="grid gap-8 grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-6"
-              initial="hidden"
-              animate="visible"
-              variants={{
-                hidden: {},
-                visible: {
-                  transition: {
-                    staggerChildren: 0.08,
+            <div className="min-h-[600px]">
+              <motion.div
+                className="grid gap-8 grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-6"
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: {},
+                  visible: {
+                    transition: {
+                      staggerChildren: 0.08,
+                    },
                   },
-                },
-              }}
-            >
-              {sortedListings.map((item) => (
-                <motion.a
-                  key={item.itemId}
-                  href={item.itemWebUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variants={{
-                    hidden: { opacity: 0, y: 20 },
-                    visible: { opacity: 1, y: 0 },
-                  }}
-                  transition={{ duration: 0.4, ease: 'easeOut' }}
-                  className="group bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
-                >
-                  <div className="relative w-full aspect-[3/4]">
-                    <Image
-                      src={
-                        (
-                          item?.image?.imageUrl ||
-                          item?.thumbnailImages?.[0]?.imageUrl ||
-                          '/fallback.jpg'
-                        ).replace(/s-l\d+\.jpg/, 's-l1600.jpg')
-                      }
-                      alt={item.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out"
-                      sizes="(max-width: 768px) 100vw, 25vw"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-md font-semibold text-gray-900 mb-1 line-clamp-2 leading-snug">
-                      {item.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm">
-                      ${item?.price?.value} {item?.price?.currency}
-                    </p>
-                  </div>
-                </motion.a>
-              ))}
-            </motion.div>
+                }}
+              >
+                {sortedListings.map((item) => (
+                  <motion.a
+                    key={item.itemId}
+                    href={item.itemWebUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variants={{
+                      hidden: { opacity: 0, y: 20 },
+                      visible: { opacity: 1, y: 0 },
+                    }}
+                    transition={{ duration: 0.4, ease: 'easeOut' }}
+                    className="group bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
+                  >
+                    <div className="relative w-full aspect-[3/4]">
+                      <Image
+                        src={
+                          (
+                            item?.image?.imageUrl ||
+                            item?.thumbnailImages?.[0]?.imageUrl ||
+                            '/fallback.jpg'
+                          ).replace(/s-l\d+\.jpg/, 's-l1600.jpg')
+                        }
+                        alt={item.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out"
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="text-md font-semibold text-gray-900 mb-1 line-clamp-2 leading-snug">
+                        {item.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm">
+                        ${item?.price?.value} {item?.price?.currency}
+                      </p>
+                    </div>
+                  </motion.a>
+                ))}
+              </motion.div>
+            </div>
           )}
         </section>
       </main>
