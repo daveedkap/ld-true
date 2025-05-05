@@ -8,9 +8,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 
 const messages = [
-  "We bring the best of secondhand fashion to your fingertips.",
-  "Shop unique, vintage, sustainable finds across top marketplaces.",
-  "Shop with confidence, knowing you're making a difference.",
+  "One shop. Every platform. Always true to style.",
+  "Handpicked vintage and streetwear, curated just for you.",
+  "Your favorite vintage finds, in one place.",
 ]
 
 const categoryKeywords: Record<string, string[]> = {
@@ -327,7 +327,7 @@ export default function DashboardPage() {
           ) : (
             <div className="min-h-[600px]">
               <motion.div
-                className="grid gap-8 grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-6"
+                className="grid gap-8 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6"
                 initial="hidden"
                 animate="visible"
                 variants={{
@@ -368,7 +368,7 @@ export default function DashboardPage() {
                       />
                     </div>
                     <div className="p-4">
-                      <h3 className="text-md font-semibold text-gray-900 mb-1 line-clamp-2 leading-snug">
+                    <h3 className="text-xs font-medium text-gray-900 mb-1 line-clamp-2 leading-snug">
                         {item.title}
                       </h3>
                       <p className="text-gray-600 text-sm">
