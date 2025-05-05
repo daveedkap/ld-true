@@ -10,7 +10,7 @@ import Image from 'next/image'
 const messages = [
   "One shop. Every platform. Always true to style.",
   "Handpicked vintage and streetwear, curated just for you.",
-  "Your favorite vintage finds, in one place.",
+  "Your favorite vintage finds all in one place.",
 ]
 
 const categoryKeywords: Record<string, string[]> = {
