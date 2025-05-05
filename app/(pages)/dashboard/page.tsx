@@ -21,6 +21,7 @@ export default function DashboardPage() {
   const [resumeTimeout, setResumeTimeout] = useState<NodeJS.Timeout | null>(null)
   const [listings, setListings] = useState<any[]>([])
   const [listingsLoading, setListingsLoading] = useState(true)
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null)
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -33,7 +34,7 @@ export default function DashboardPage() {
     }
     checkAuth()
   }, [router])
-  
+
   useEffect(() => {
     const fetchListings = async () => {
       try {
@@ -46,12 +47,11 @@ export default function DashboardPage() {
         setListingsLoading(false)
       }
     }
-  
+
     if (!loading) {
       fetchListings()
     }
   }, [loading])
-  
 
   useEffect(() => {
     if (manual) return
@@ -67,6 +67,15 @@ export default function DashboardPage() {
     const timeout = setTimeout(() => setManual(false), 3000)
     setResumeTimeout(timeout)
   }
+
+  const sortedListings = [...listings].sort((a, b) => {
+    const aPrice = parseFloat(a?.price?.value || '0')
+    const bPrice = parseFloat(b?.price?.value || '0')
+
+    if (sortOrder === 'asc') return aPrice - bPrice
+    if (sortOrder === 'desc') return bPrice - aPrice
+    return 0
+  })
 
   if (loading) {
     return <div className="h-screen flex items-center justify-center">Loading...</div>
@@ -142,12 +151,31 @@ export default function DashboardPage() {
         <div className="w-full border-t border-gray-300" />
 
         <section id="next-section" className="py-20 px-6 bg-white">
-          <h2 className="text-4xl font-bold mb-10 text-center text-gray-900 tracking-tight">
-            New Listings on eBay!
-          </h2>
+          <div className="flex flex-col md:flex-row items-center justify-between mb-10 gap-4">
+            <h2 className="text-4xl font-bold text-gray-900 tracking-tight">
+              New Listings on eBay!
+            </h2>
+            <div className="flex items-center space-x-2">
+              <label htmlFor="sort" className="text-sm font-medium text-gray-700">Sort by:</label>
+              <select
+                id="sort"
+                className="border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                value={sortOrder || ''}
+                onChange={(e) => {
+                  const val = e.target.value
+                  setSortOrder(val === 'asc' ? 'asc' : val === 'desc' ? 'desc' : null)
+                }}
+              >
+                <option value="">Default</option>
+                <option value="asc">Price: Low to High</option>
+                <option value="desc">Price: High to Low</option>
+              </select>
+            </div>
+          </div>
+
           {listingsLoading ? (
             <p className="text-center text-gray-500">Loading listings...</p>
-          ) : listings.length === 0 ? (
+          ) : sortedListings.length === 0 ? (
             <p className="text-center text-gray-500">No listings found. Try adjusting your queries.</p>
           ) : (
             <motion.div
@@ -163,7 +191,7 @@ export default function DashboardPage() {
                 },
               }}
             >
-              {listings.map((item) => (
+              {sortedListings.map((item) => (
                 <motion.a
                   key={item.itemId}
                   href={item.itemWebUrl}
@@ -177,19 +205,19 @@ export default function DashboardPage() {
                   className="group bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
                 >
                   <div className="relative w-full aspect-[3/4]">
-                  <Image
-                    src={
-                      (
-                        item?.image?.imageUrl ||
-                        item?.thumbnailImages?.[0]?.imageUrl ||
-                        '/fallback.jpg'
-                      ).replace(/s-l\d+\.jpg/, 's-l1600.jpg')
-                    }
-                    alt={item.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out"
-                    sizes="(max-width: 768px) 100vw, 25vw"
-                  />
+                    <Image
+                      src={
+                        (
+                          item?.image?.imageUrl ||
+                          item?.thumbnailImages?.[0]?.imageUrl ||
+                          '/fallback.jpg'
+                        ).replace(/s-l\d+\.jpg/, 's-l1600.jpg')
+                      }
+                      alt={item.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out"
+                      sizes="(max-width: 768px) 100vw, 25vw"
+                    />
                   </div>
                   <div className="p-4">
                     <h3 className="text-md font-semibold text-gray-900 mb-1 line-clamp-2 leading-snug">
