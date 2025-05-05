@@ -228,7 +228,7 @@ export default function DashboardPage() {
                       {Object.entries(categoryGroups).map(([group, cats]) => (
                         <div key={group}>
                           <button
-                            className="flex items-center justify-between w-full font-bold text-gray-800 hover:underline mb-1"
+                            className="flex items-center justify-between w-full font-bold text-gray-800 px-3 py-1 rounded-full hover:bg-gray-100 transition mb-1"
                             onClick={() => toggleGroup(group)}
                           >
                             <span>{group}</span>
