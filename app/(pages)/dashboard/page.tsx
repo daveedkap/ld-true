@@ -13,6 +13,21 @@ const messages = [
   "Shop with confidence, knowing you're making a difference.",
 ]
 
+const categoryKeywords: Record<string, string[]> = {
+  'T-Shirt': ['tee', 't-shirt'],
+  'Hoodies': ['hoodie'],
+  'Jackets': ['jacket'],
+  'Jeans': ['jeans'],
+  'Pants': ['pants'],
+  'Cargo Pants': ['cargo pants'],
+  'Sweatpants': ['sweatpants'],
+  'Track Pants': ['track pants'],
+  'Ski Pants': ['ski pants'],
+  'Cargo Shorts': ['cargo shorts'],
+  'Jorts': ['jorts'],
+  'Beanies': ['beanie'],
+}
+
 const categoryGroups = {
   Tops: ['T-Shirt', 'Hoodies', 'Jackets'],
   Bottoms: ['Jeans', 'Pants', 'Cargo Pants', 'Sweatpants', 'Track Pants', 'Ski Pants', 'Cargo Shorts', 'Jorts'],
@@ -102,9 +117,11 @@ export default function DashboardPage() {
   }
 
   const getCategoryCount = (cat: string) =>
-    listings.filter((item) =>
-      item?.title?.toLowerCase().includes(cat.toLowerCase())
-    ).length
+    listings.filter((item) => {
+      const title = item?.title?.toLowerCase() || ''
+      const keywords = categoryKeywords[cat] || [cat.toLowerCase()]
+      return keywords.some(keyword => title.includes(keyword))
+    }).length  
 
   const handleCategoryToggle = (cat: string) => {
     setPendingCategories((prev) =>
@@ -120,9 +137,11 @@ export default function DashboardPage() {
   const sortedListings = [...listings]
     .filter((item) => {
       if (selectedCategories.length === 0) return true
-      return selectedCategories.some((cat) =>
-        item.title.toLowerCase().includes(cat.toLowerCase())
-      )
+      const title = item?.title?.toLowerCase() || ''
+      return selectedCategories.some((cat) => {
+        const keywords = categoryKeywords[cat] || [cat.toLowerCase()]
+        return keywords.some((keyword) => title.includes(keyword))
+      })
     })
     .sort((a, b) => {
       const aPrice = parseFloat(a?.price?.value || '0')
