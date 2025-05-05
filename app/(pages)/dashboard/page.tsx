@@ -224,23 +224,21 @@ export default function DashboardPage() {
                   <div className="absolute z-10 bg-white border border-gray-200 shadow-md mt-2 p-4 rounded w-80 
                   sm:-right-10 sm:left-auto sm:translate-x-0 
                   left-[40%] -translate-x-[20%]">
-                    <label className="block font-semibold text-gray-700 mb-2">
-                      <input
-                        type="checkbox"
-                        className="mr-2"
-                        checked={pendingCategories.length === 0}
-                        onChange={() => setPendingCategories([])}
-                      />
-                      All
-                    </label>
                     <div className="space-y-2">
                       {Object.entries(categoryGroups).map(([group, cats]) => (
                         <div key={group}>
                           <button
-                            className="font-bold text-gray-800 hover:underline mb-1"
+                            className="flex items-center justify-between w-full font-bold text-gray-800 hover:underline mb-1"
                             onClick={() => toggleGroup(group)}
                           >
-                            {group}
+                            <span>{group}</span>
+                            <span
+                              className={`transform transition-transform duration-200 ${
+                                expandedGroups.includes(group) ? 'rotate-90' : ''
+                              }`}
+                            >
+                              ▶
+                            </span>
                           </button>
                           {expandedGroups.includes(group) && (
                             <div className="grid grid-cols-2 gap-x-4 gap-y-2 ml-2">
@@ -260,12 +258,24 @@ export default function DashboardPage() {
                         </div>
                       ))}
                     </div>
-                    <button
-                      onClick={handleApplyFilters}
-                      className="mt-4 w-full bg-black text-white text-sm py-1.5 rounded hover:bg-gray-900 transition"
-                    >
-                      Apply
-                    </button>
+                    <div className="mt-4 flex space-x-2">
+                      <button
+                        onClick={() => {
+                          setPendingCategories([])
+                          setSelectedCategories([])
+                          setFiltersOpen(false)
+                        }}                        
+                        className="w-1/2 bg-black text-white text-sm py-1.5 rounded hover:bg-gray-900 transition"
+                      >
+                        Reset
+                      </button>
+                      <button
+                        onClick={handleApplyFilters}
+                        className="w-1/2 bg-black text-white text-sm py-1.5 rounded hover:bg-gray-900 transition"
+                      >
+                        Apply
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
