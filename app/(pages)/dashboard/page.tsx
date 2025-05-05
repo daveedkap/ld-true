@@ -29,19 +29,29 @@ export default function DashboardPage() {
         router.push('/login')
       } else {
         setLoading(false)
-        try {
-          const listingsRes = await fetch('/api/ebay-listings')
-          const data = await listingsRes.json()
-          setListings(data)
-        } catch (e) {
-          console.error('Failed to load listings:', e)
-        } finally {
-          setListingsLoading(false)
-        }
       }
     }
     checkAuth()
   }, [router])
+  
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const listingsRes = await fetch('/api/ebay-listings')
+        const data = await listingsRes.json()
+        setListings(data)
+      } catch (e) {
+        console.error('Failed to load listings:', e)
+      } finally {
+        setListingsLoading(false)
+      }
+    }
+  
+    if (!loading) {
+      fetchListings()
+    }
+  }, [loading])
+  
 
   useEffect(() => {
     if (manual) return
@@ -91,7 +101,6 @@ export default function DashboardPage() {
               </AnimatePresence>
             </div>
 
-
             <div className="flex justify-center mt-4 space-x-2">
               {messages.map((_, i) => (
                 <button
@@ -129,39 +138,58 @@ export default function DashboardPage() {
             </button>
           </div>
         </section>
-      
+
         <div className="w-full border-t border-gray-300" />
 
         <section id="next-section" className="py-20 px-6 bg-white">
           <h2 className="text-4xl font-bold mb-10 text-center text-gray-900 tracking-tight">
-            Trending Listings on eBay
+            New Listings on eBay!
           </h2>
           {listingsLoading ? (
             <p className="text-center text-gray-500">Loading listings...</p>
           ) : listings.length === 0 ? (
             <p className="text-center text-gray-500">No listings found. Try adjusting your queries.</p>
           ) : (
-            <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <motion.div
+              className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: {
+                    staggerChildren: 0.08,
+                  },
+                },
+              }}
+            >
               {listings.map((item) => (
-                <a
+                <motion.a
                   key={item.itemId}
                   href={item.itemWebUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
+                  transition={{ duration: 0.4, ease: 'easeOut' }}
+                  className="group bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
                 >
                   <div className="relative w-full aspect-[3/4]">
-                    <Image
-                      src={
+                  <Image
+                    src={
+                      (
                         item?.image?.imageUrl ||
                         item?.thumbnailImages?.[0]?.imageUrl ||
                         '/fallback.jpg'
-                      }
-                      alt={item.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out"
-                      sizes="(max-width: 768px) 100vw, 25vw"
-                    />
+                      ).replace(/s-l\d+\.jpg/, 's-l1600.jpg')
+                    }
+                    alt={item.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300 ease-in-out"
+                    sizes="(max-width: 768px) 100vw, 25vw"
+                  />
                   </div>
                   <div className="p-4">
                     <h3 className="text-md font-semibold text-gray-900 mb-1 line-clamp-2 leading-snug">
@@ -171,9 +199,9 @@ export default function DashboardPage() {
                       ${item?.price?.value} {item?.price?.currency}
                     </p>
                   </div>
-                </a>
+                </motion.a>
               ))}
-            </div>
+            </motion.div>
           )}
         </section>
       </main>
