@@ -1,3 +1,4 @@
+// pages/dashboard/page.tsx
 'use client'
 
 import { useRouter } from 'next/navigation'
@@ -31,8 +32,8 @@ export default function DashboardPage() {
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [pendingCategories, setPendingCategories] = useState<string[]>([])
-
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const filterButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -74,13 +75,24 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        filterButtonRef.current &&
+        !filterButtonRef.current.contains(event.target as Node)
+      ) {
         setFiltersOpen(false)
       }
     }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+
+    if (filtersOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [filtersOpen])
 
   const resetManualPause = () => {
     setManual(true)
@@ -193,6 +205,7 @@ export default function DashboardPage() {
             <div className="flex items-center gap-4 flex-wrap justify-center md:justify-end">
               <div className="relative" ref={dropdownRef}>
                 <button
+                  ref={filterButtonRef}
                   onClick={() => {
                     setFiltersOpen(!filtersOpen)
                     setPendingCategories(selectedCategories)
@@ -202,9 +215,9 @@ export default function DashboardPage() {
                   Filter
                 </button>
                 {filtersOpen && (
-                  <div className="absolute z-10 bg-white border border-gray-200 shadow-md mt-2 p-4 rounded max-h-80 overflow-y-auto w-64">
+                  <div className="absolute z-10 bg-white border border-gray-200 shadow-md mt-2 p-4 rounded w-80 -right-10">
                     <div className="space-y-2">
-                      <label className="block font-semibold text-gray-700">
+                      <label className="block font-semibold text-gray-700 mb-2">
                         <input
                           type="checkbox"
                           className="mr-2"
@@ -213,17 +226,19 @@ export default function DashboardPage() {
                         />
                         All
                       </label>
-                      {categories.map((cat) => (
-                        <label key={cat} className="block text-sm text-gray-700">
-                          <input
-                            type="checkbox"
-                            className="mr-2"
-                            checked={pendingCategories.includes(cat)}
-                            onChange={() => handleCategoryToggle(cat)}
-                          />
-                          {cat} ({getCategoryCount(cat)})
-                        </label>
-                      ))}
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                        {categories.map((cat) => (
+                          <label key={cat} className="text-sm text-gray-700 flex items-center">
+                            <input
+                              type="checkbox"
+                              className="mr-2"
+                              checked={pendingCategories.includes(cat)}
+                              onChange={() => handleCategoryToggle(cat)}
+                            />
+                            {cat} ({getCategoryCount(cat)})
+                          </label>
+                        ))}
+                      </div>
                       <button
                         onClick={handleApplyFilters}
                         className="mt-4 w-full bg-black text-white text-sm py-1.5 rounded hover:bg-gray-900 transition"
