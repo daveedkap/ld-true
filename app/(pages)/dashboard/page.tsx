@@ -153,7 +153,7 @@ export default function DashboardPage() {
         <section id="next-section" className="py-20 px-6 bg-white">
           <div className="flex flex-col md:flex-row items-center justify-between mb-10 gap-4">
             <h2 className="text-4xl font-bold text-gray-900 tracking-tight">
-              New Listings on eBay!
+              Latest Listings
             </h2>
             <div className="flex items-center space-x-2">
               <label htmlFor="sort" className="text-sm font-medium text-gray-700">Sort by:</label>
