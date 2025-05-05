@@ -36,12 +36,22 @@ export async function GET() {
     const token = await getAccessToken()
 
     const searchQueries = [
-      'vintage 2000s baggy wide leg faded jeans',
-      '2000s vintage baggy wide leg pants',
-      'vintage 2000s baggy wide leg workwear pants',
-      '2000s vintage rare baggy wide leg',
+      'vintage 2000s baggy wide leg jeans',
+      'vintage 2000s wide leg y2k bootcut jeans',
       '2000s vintage rare baggy wide leg jeans',
-      '2000s vintage rare baggy wide leg cargos'
+      'vintage 2000s baggy wide leg workwear pants',
+      '2000s vintage baggy wide leg workwear cargo pants',
+      '2000s vintage baggy wide leg cargo pants',
+      'vintage 2000s wide leg baggy sweatpants',
+      'vintage 2000s baggy wide leg track pants',
+      '2000s vintage baggy wide leg ski pants',
+      '2000s vintage baggy wide leg cargo shorts',
+      'vintage 2000s baggy wide leg jorts',
+      'vintage 2000s baggy wide leg jeans',
+      'vintage 2000s boxy tee',
+      'vintage 2000s baggy boxy hoodie',
+      'vintage 2000s boxy jacket',
+      'vintage 2000s beanie'
     ]
 
     const headers = {
