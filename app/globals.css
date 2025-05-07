@@ -1,6 +1,4 @@
 @import "tailwindcss";
-@tailwind base;
-@tailwind components;
 @tailwind utilities;
 
 @layer utilities {
@@ -25,4 +23,3 @@
     animation: shimmer 1.5s infinite linear;
   }
 }
-
