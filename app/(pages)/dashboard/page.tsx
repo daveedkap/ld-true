@@ -35,7 +35,6 @@ const categoryGroups = {
 }
 
 export default function DashboardPage() {
-  const router = useRouter() // unused variable
   const [index, setIndex] = useState(0)
   const [manual, setManual] = useState(false)
   const [resumeTimeout, setResumeTimeout] = useState<NodeJS.Timeout | null>(null)
