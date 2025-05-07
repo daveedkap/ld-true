@@ -79,7 +79,6 @@ git push origin your-feature-name # Push your local changes/commits to a remote 
 ### 4. Create a Pull Request
 
 After pushing, you should be able to open a Pull Request (PR), and compare it to the remote staging branch. Make sure you compare to the remote staging branch and NOT the main branch. Only after further review will changes made in staging be merged into main.
----
 
 ## ✅ Git Etiquette
 
