@@ -36,7 +36,6 @@ const categoryGroups = {
 
 export default function DashboardPage() {
   const router = useRouter()
-  const [loading, setLoading] = useState(true)
   const [index, setIndex] = useState(0)
   const [manual, setManual] = useState(false)
   const [resumeTimeout, setResumeTimeout] = useState<NodeJS.Timeout | null>(null)
@@ -53,18 +52,6 @@ export default function DashboardPage() {
   const [touchEndX, setTouchEndX] = useState<number | null>(null)
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const res = await fetch('/api/check-auth')
-      if (res.status !== 200) {
-        router.push('/login')
-      } else {
-        setLoading(false)
-      }
-    }
-    checkAuth()
-  }, [router])
-
-  useEffect(() => {
     const fetchListings = async () => {
       try {
         const listingsRes = await fetch('/api/ebay-listings')
@@ -76,11 +63,8 @@ export default function DashboardPage() {
         setListingsLoading(false)
       }
     }
-
-    if (!loading) {
-      fetchListings()
-    }
-  }, [loading])
+    fetchListings()
+  }, [])  
 
   useEffect(() => {
     if (manual) return
@@ -172,10 +156,6 @@ export default function DashboardPage() {
     setExpandedGroups((prev) =>
       prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group]
     )
-  }
-
-  if (loading) {
-    return <div className="h-screen flex items-center justify-center">Loading...</div>
   }
 
   return (
