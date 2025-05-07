@@ -2,7 +2,13 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['i.ebayimg.com'], // ✅ allow eBay-hosted images
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'i.ebayimg.com',
+        pathname: '/**',
+      },
+    ],
   },
 }
 
