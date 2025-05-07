@@ -21,15 +21,7 @@ npm install
 
 ### 3. Create Environment Variables
 
-Create a `.env.local` file in the root directory and add the following:
-
-```env
-MONGODB_URI=your-mongodb-uri
-EMAIL_FROM=your-email@gmail.com
-EMAIL_TO=your-email@gmail.com
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASS=your-app-password
-```
+Create a `.env.local` file in the root of the directory.
 
 Contact [daveedkap](https://github.com/daveedkap) for credentials.
 
@@ -60,10 +52,12 @@ public/            # Static assets
 
 We welcome contributions! Please follow the steps below to make a feature or bug fix:
 
-### 1. Create a New Branch
+### 1. Pull latest changes and create a new branch
 
 ```bash
-git checkout -b your-feature-name
+git pull origin main # Pull latest changes from remote main branch
+git pull origin staging # Pull latest changes from remote staging branch. The staging branch is where you will push your changes.
+git checkout -b your-feature-name # Create your feature branch
 ```
 
 ### 2. Make Your Changes
@@ -73,23 +67,25 @@ Keep changes clean and limited to the purpose of the branch.
 ### 3. Test, Stage, Commit, and Push
 
 ```bash
-npm run build # To make sure Vercel deployment is successful
-git add .
-git commit -m "✨ Add [your feature]"
-git push origin your-feature-name
+npm run build && npm start # Build deployment for Vercel to make sure it's successful, and test in your localhost.
+git diff # View all your local changes
+git diff filename # View individual file's local changes
+git add . # Add all your modified changes/files.
+git add filename # Or add one file at a time
+git commit -m "Add [your feature]" # "Save" your changes to your local repository.
+git push origin your-feature-name # Push your local changes/commits to a remote branch for your feature.
 ```
 
 ### 4. Create a Pull Request
 
-Go to GitHub and open a PR against `main` with a clear description of your changes.
-
+After pushing, you should be able to open a Pull Request (PR), and compare it to the remote staging branch. Make sure you compare to the remote staging branch and NOT the main branch. Only after further review will changes made in staging be merged into main.
 ---
 
 ## ✅ Git Etiquette
 
 - Keep PRs focused on one thing (avoid massive changes).
-- Always pull the latest changes from `main` before starting a new branch.
-- If stuck, create a draft PR and ask for help.
+- Always pull the latest changes from `main` and `staging` before starting a new branch.
+- If stuck, create a draft PR and ask for help or reach out to [daveedkap](https://github.com/daveedkap).
 
 ---
 
@@ -105,7 +101,7 @@ Go to GitHub and open a PR against `main` with a clear description of your chang
 
 ## 📫 Contact
 
-Feel free to reach out via the [Contact](https://ld-true.vercel.app/contact) page or open an issue for questions and ideas.
+Feel free to reach out via the [Contact](https://ld-true.vercel.app/contact) page, [daveedkap](https://github.com/daveedkap), or open an issue for questions and ideas.
 
 ---
 
