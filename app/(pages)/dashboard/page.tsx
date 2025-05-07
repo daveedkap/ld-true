@@ -49,7 +49,6 @@ export default function DashboardPage() {
   const dropdownRef = useRef<HTMLDivElement>(null)
   const filterButtonRef = useRef<HTMLButtonElement>(null)
   const [touchStartX, setTouchStartX] = useState<number | null>(null)
-  const [touchEndX, setTouchEndX] = useState<number | null>(null)
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -102,20 +101,18 @@ export default function DashboardPage() {
     setResumeTimeout(timeout)
   }
 
-  const handleSwipe = () => {
-    if (touchStartX === null || touchEndX === null) return
+  const handleSwipe = (touchEndX: number) => {
+    if (touchStartX === null) return
     const distance = touchStartX - touchEndX
-    const threshold = 50 // minimum swipe distance
+    const threshold = 50
     if (distance > threshold) {
-      // swiped left
       setIndex((prev) => (prev + 1) % messages.length)
       resetManualPause()
     } else if (distance < -threshold) {
-      // swiped right
       setIndex((prev) => (prev - 1 + messages.length) % messages.length)
       resetManualPause()
     }
-  }  
+  }
 
   const getCategoryCount = (cat: string) =>
     listings.filter((item) => {
@@ -176,19 +173,7 @@ export default function DashboardPage() {
               className="h-20 flex items-center justify-center sm:touch-none"
               onTouchStart={(e) => setTouchStartX(e.changedTouches[0].clientX)}
               onTouchEnd={(e) => {
-                const touchEnd = e.changedTouches[0].clientX
-                if (touchStartX === null) return
-                const distance = touchStartX - touchEnd
-                const threshold = 50
-
-                if (distance > threshold && index < messages.length - 1) {
-                  setIndex(index + 1)
-                  resetManualPause()
-                } else if (distance < -threshold && index > 0) {
-                  setIndex(index - 1)
-                  resetManualPause()
-                }
-
+                handleSwipe(e.changedTouches[0].clientX)
                 setTouchStartX(null)
               }}
             >
