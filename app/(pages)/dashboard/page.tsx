@@ -1,8 +1,8 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { useEffect, useState, useRef } from 'react'
 import PageWrapper from '@/components/PageWrapper'
+import ListingSkeleton from '@/components/ListingSkeleton'
 import { FaChevronDown } from 'react-icons/fa'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
@@ -327,7 +327,11 @@ export default function DashboardPage() {
           </div>
 
           {listingsLoading ? (
-            <p className="text-center text-gray-500">Loading listings...</p>
+            <div className="grid gap-8 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 min-h-[600px]">
+              {Array.from({ length: 12 }).map((_, idx) => (
+                <ListingSkeleton key={idx} />
+              ))}
+            </div>
           ) : sortedListings.length === 0 ? (
             <div className="text-center text-gray-500 min-h-[600px] flex items-center justify-center">
               No listings match your filters.
